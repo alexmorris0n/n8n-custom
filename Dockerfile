@@ -1,11 +1,15 @@
 FROM n8nio/n8n:latest
 
-# Install community nodes
-RUN cd /usr/local/lib/node_modules/n8n && \
-    npm install --omit=dev \
-        n8n-nodes-tally \
-        n8n-nodes-missive \
-        n8n-nodes-softr
+USER root
+
+# Install community nodes globally
+RUN npm install -g \
+    n8n-nodes-tally \
+    n8n-nodes-missive \
+    n8n-nodes-softr && \
+    ln -s /usr/local/lib/node_modules/n8n-nodes-* /usr/local/lib/node_modules/n8n/node_modules/ 2>/dev/null || true
+
+USER node
 
 # Enable community packages
 ENV N8N_COMMUNITY_PACKAGES_ENABLED=true
