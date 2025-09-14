@@ -2,12 +2,13 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Install community nodes globally
-RUN npm install -g \
-    n8n-nodes-tally \
-    n8n-nodes-missive \
-    n8n-nodes-softr && \
-    ln -s /usr/local/lib/node_modules/n8n-nodes-* /usr/local/lib/node_modules/n8n/node_modules/ 2>/dev/null || true
+# Create directory for community nodes if it doesn't exist
+RUN mkdir -p /home/node/.n8n/nodes
+
+# Install community nodes globally and copy to n8n's custom nodes directory
+RUN npm install -g n8n-nodes-tally n8n-nodes-missive n8n-nodes-softr && \
+    cp -r /usr/local/lib/node_modules/n8n-nodes-* /home/node/.n8n/nodes/ 2>/dev/null || true && \
+    chown -R node:node /home/node/.n8n/nodes
 
 USER node
 
