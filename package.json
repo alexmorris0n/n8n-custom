@@ -1,0 +1,11 @@
+{
+  "name": "n8n-community-nodes",
+  "private": true,
+  "description": "Pinned community nodes for n8n",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "n8n-nodes-tallyso": "^1.0.0",
+    "n8n-nodes-missive": "*",
+    "n8n-nodes-softr": "*"
+  }
+}
