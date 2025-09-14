@@ -1,17 +1,28 @@
 FROM n8nio/n8n:latest
 
 USER root
+# Build tools in case any node pulls native deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git ca-certificates python3 make g++ && \
+    rm -rf /var/lib/apt/lists/*
 
-# Create directory for community nodes if it doesn't exist
-RUN mkdir -p /home/node/.n8n/nodes
-
-# Install community nodes globally and copy to n8n's custom nodes directory
-RUN npm install -g n8n-nodes-tally n8n-nodes-missive n8n-nodes-softr && \
-    cp -r /usr/local/lib/node_modules/n8n-nodes-* /home/node/.n8n/nodes/ 2>/dev/null || true && \
-    chown -R node:node /home/node/.n8n/nodes
-
+# Prepare n8n home
+RUN mkdir -p /home/node/.n8n && chown -R node:node /home/node/.n8n
 USER node
+WORKDIR /home/node/.n8n
 
-# Enable community packages
+# Install community nodes as LOCAL deps (not -g)
+RUN npm init -y
+RUN npm install --omit=dev \
+    n8n-nodes-tallyso \
+    n8n-nodes-missive \
+    n8n-nodes-softr
+
+# Let n8n know what to load (also useful on first boot)
 ENV N8N_COMMUNITY_PACKAGES_ENABLED=true
+ENV N8N_COMMUNITY_PACKAGES="n8n-nodes-tallyso,n8n-nodes-missive,n8n-nodes-softr"
+
+# (Optional) allow Function/Code nodes to require() external libs
 ENV NODE_FUNCTION_ALLOW_EXTERNAL=*
+
+WORKDIR /
