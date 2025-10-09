@@ -4,8 +4,7 @@
   "description": "Pinned community nodes for n8n",
   "license": "UNLICENSED",
   "dependencies": {
-    "n8n-nodes-tally": "*",
     "n8n-nodes-missive": "*",
-    "n8n-nodes-softr": "*"
+    "n8n-nodes-instantly": "*"
   }
 }
